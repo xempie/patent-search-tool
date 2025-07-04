@@ -26,7 +26,7 @@ A comprehensive semantic patent search system built with Qdrant vector database 
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-company/patent-search-tool.git
+git clone https://github.com/xempie/patent-search-tool.git
 cd patent-search-tool
 ```
 
