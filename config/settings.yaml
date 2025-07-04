@@ -1,0 +1,283 @@
+# Patent Search Tool Configuration
+
+# Qdrant Vector Database Settings
+qdrant:
+  host: "localhost"
+  port: 6333
+  api_key: null  # Set for Qdrant Cloud
+  collection_name: "patents"
+  timeout: 30.0
+  prefer_grpc: false
+  
+  # Collection Configuration
+  collection:
+    vector_size: 384  # Depends on embedding model
+    distance_metric: "cosine"  # cosine, euclidean, or dot
+    
+    # HNSW Index Settings
+    hnsw:
+      m: 32  # Number of bi-directional links
+      ef_construct: 200  # Size of dynamic candidate list
+      full_scan_threshold: 10000
+      max_indexing_threads: 4
+    
+    # Optimizer Settings
+    optimizer:
+      default_segment_number: 8
+      max_segment_size: 200000
+      memmap_threshold: 200000
+      indexing_threshold: 50000
+      flush_interval_sec: 30
+      max_optimization_threads: 4
+
+# Embedding Model Settings
+embedding:
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  device: "cpu"  # cpu, cuda, mps
+  cache_folder: "./models"
+  trust_remote_code: false
+  
+  # Alternative models for different use cases
+  models:
+    fast: "sentence-transformers/all-MiniLM-L6-v2"  # Fast, good quality
+    accurate: "sentence-transformers/all-mpnet-base-v2"  # Higher accuracy
+    multilingual: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    domain_specific: "sentence-transformers/allenai-specter"  # Scientific papers
+
+# Search Configuration
+search:
+  default_limit: 10
+  max_limit: 100
+  min_score: 0.5
+  batch_size: 100
+  timeout: 30.0
+  
+  # Text processing
+  max_text_length: 10000
+  max_claims_for_embedding: 3
+  max_description_chars: 1000
+
+# Data Loading Settings
+data_loading:
+  supported_formats: ["csv", "json", "xml", "xlsx"]
+  batch_size: 100
+  max_workers: 4
+  chunk_size: 1000
+  
+  # CSV Settings
+  csv:
+    encoding: "utf-8"
+    delimiter: ","
+    quote_char: '"'
+    
+  # JSON Settings
+  json:
+    encoding: "utf-8"
+    
+  # XML Settings
+  xml:
+    encoding: "utf-8"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: null  # Set to enable file logging
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+
+# Application Settings
+app:
+  name: "Patent Search Tool"
+  version: "1.0.0"
+  debug: false
+  
+  # Performance
+  max_concurrent_requests: 10
+  request_timeout: 60.0
+  
+  # Cache settings
+  cache:
+    enabled: true
+    ttl: 3600  # 1 hour
+    max_size: 1000
+
+# API Configuration (if using FastAPI)
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1
+  reload: false
+  
+  # CORS settings
+  cors:
+    allow_origins: ["*"]
+    allow_credentials: true
+    allow_methods: ["*"]
+    allow_headers: ["*"]
+  
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_minute: 100
+
+# Monitoring and Metrics
+monitoring:
+  enabled: false
+  metrics_port: 9090
+  health_check_interval: 30
+  
+  # Prometheus metrics
+  prometheus:
+    enabled: false
+    port: 9090
+    path: "/metrics"
+
+# Security Settings
+security:
+  api_key_required: false
+  api_key_header: "X-API-Key"
+  allowed_hosts: []
+  
+  # Rate limiting
+  rate_limiting:
+    enabled: false
+    requests_per_minute: 60
+    burst_size: 10
+
+# Data Processing
+processing:
+  # Text cleaning
+  clean_html: true
+  normalize_unicode: true
+  expand_abbreviations: true
+  max_claim_length: 5000
+  
+  # Technology classification
+  auto_classify: true
+  classification_confidence_threshold: 0.7
+  
+  # Patent enhancement
+  enhance_metadata: true
+  extract_dates: true
+  validate_ids: true
+
+# File Storage
+storage:
+  data_directory: "./data"
+  models_directory: "./models"
+  logs_directory: "./logs"
+  temp_directory: "./temp"
+  
+  # Backup settings
+  backup:
+    enabled: false
+    directory: "./backups"
+    retention_days: 30
+    compress: true
+
+# Development Settings
+development:
+  debug: true
+  auto_reload: true
+  verbose_logging: true
+  
+  # Testing
+  test_data_size: 50
+  create_sample_data: true
+  
+  # Profiling
+  profile_requests: false
+  profile_searches: false
+
+# Production Settings
+production:
+  debug: false
+  auto_reload: false
+  workers: 4
+  
+  # Monitoring
+  health_checks: true
+  metrics_collection: true
+  
+  # Performance
+  optimize_memory: true
+  preload_models: true
+  
+  # Security
+  require_api_key: true
+  enable_rate_limiting: true
+  log_requests: true
+
+# Technology Field Mappings
+technology_fields:
+  # IPC to Technology Field mapping
+  ipc_mapping:
+    "A": "Human Necessities"
+    "B": "Performing Operations/Transporting"
+    "C": "Chemistry/Metallurgy"
+    "D": "Textiles/Paper"
+    "E": "Fixed Constructions"
+    "F": "Mechanical Engineering"
+    "G": "Physics"
+    "H": "Electricity"
+  
+  # Modern technology categories
+  modern_fields:
+    - "Artificial Intelligence"
+    - "Machine Learning"
+    - "Blockchain"
+    - "Internet of Things"
+    - "Quantum Computing"
+    - "Biotechnology"
+    - "Renewable Energy"
+    - "Cybersecurity"
+    - "Robotics"
+    - "Nanotechnology"
+
+# Search Templates
+search_templates:
+  # Pre-defined search queries for common use cases
+  ai_ml:
+    query: "artificial intelligence machine learning neural networks"
+    filters:
+      technology_field: "Machine Learning"
+  
+  blockchain:
+    query: "blockchain distributed ledger cryptocurrency smart contracts"
+    filters:
+      technology_field: "Blockchain"
+  
+  quantum:
+    query: "quantum computing qubit quantum algorithms"
+    filters:
+      technology_field: "Quantum Computing"
+  
+  biotech:
+    query: "biotechnology gene therapy CRISPR genomics"
+    filters:
+      technology_field: "Biotechnology"
+
+# Email Configuration (for notifications)
+email:
+  enabled: false
+  smtp_server: "smtp.gmail.com"
+  smtp_port: 587
+  username: ""
+  password: ""
+  from_email: "patent-search@company.com"
+  
+# Webhook Configuration
+webhooks:
+  enabled: false
+  endpoints: []
+  timeout: 30
+  retry_attempts: 3
+
+# Analytics
+analytics:
+  enabled: false
+  track_searches: true
+  track_popular_patents: true
+  track_user_behavior: false
+  retention_days: 90
